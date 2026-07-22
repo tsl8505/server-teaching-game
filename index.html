@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>伺服器教學遊戲 Prototype（含即時功耗與風扇連動）</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="main">
+  <h1>🖥 伺服器教學遊戲 Prototype（即時功耗 × 風扇連動）</h1>
+
+  <div class="toolbar">
+    <select id="workflowSelect" class="workflow-select">
+      <option value="write">📝 封包寫入（Write Path）</option>
+      <option value="read">📖 資料讀取回應（Read Path）</option>
+      <option value="compute">🧠 AI 推論運算（Compute Path）</option>
+      <option value="boot">🔌 開機自檢（Boot / POST）</option>
+    </select>
+    <button class="primary" id="workflowBtn" onclick="toggleWorkflow()">▶ 執行工作流程</button>
+    <button onclick="simulateFault('drive')">💥 硬碟故障</button>
+    <button onclick="simulateFault('fan')">💥 風扇故障</button>
+    <button onclick="simulateFault('psu')">💥 PSU 故障</button>
+    <button class="reset" onclick="resetAll()">🔄 重置所有狀態</button>
+  </div>
+
+  <div class="power-meter">
+    <div class="metric">⚡ 即時總功耗：<b id="powerValue">0</b> W</div>
+    <div class="power-bar-track"><div class="power-bar-fill" id="powerBarFill"></div></div>
+    <div class="fan-speed-tag">🌀 風扇轉速對應：<span id="fanSpeedTag">—</span></div>
+  </div>
+
+  <div class="workflow-banner" id="workflowBanner"></div>
+
+  <div class="chassis-wrap">
+    <svg id="serverSvg" viewBox="0 0 1300 480" xmlns="http://www.w3.org/2000/svg">
+      <rect x="10" y="10" width="1280" height="460" rx="14" fill="#10161f" stroke="#2e3b52" stroke-width="3"/>
+
+      <text x="30"   y="34" class="region-label">前面板 — DRIVE BAYS / RAID</text>
+      <text x="290"  y="34" class="region-label">中段 — FAN WALL</text>
+      <text x="470"  y="34" class="region-label">主機板 — CPU / DIMM / NIC</text>
+      <text x="770"  y="34" class="region-label">PCIe SLOTS</text>
+      <text x="950"  y="34" class="region-label">擴充卡 — GPU / HBA / RAID</text>
+      <text x="1130" y="34" class="region-label">電源 — PSU</text>
+
+      <line x1="280"  y1="20" x2="280"  y2="460" stroke="#22304a" stroke-width="1.5" stroke-dasharray="4 4"/>
+      <line x1="460"  y1="20" x2="460"  y2="460" stroke="#22304a" stroke-width="1.5" stroke-dasharray="4 4"/>
+      <line x1="760"  y1="20" x2="760"  y2="460" stroke="#22304a" stroke-width="1.5" stroke-dasharray="4 4"/>
+      <line x1="940"  y1="20" x2="940"  y2="460" stroke="#22304a" stroke-width="1.5" stroke-dasharray="4 4"/>
+      <line x1="1120" y1="20" x2="1120" y2="460" stroke="#22304a" stroke-width="1.5" stroke-dasharray="4 4"/>
+
+      <path id="powerBus" class="power-line" d="M30 450 L1270 450"/>
+
+      <g id="driveGroup"></g>
+      <g id="fanGroup"></g>
+      <g id="boardGroup"></g>
+      <g id="pcieGroup"></g>
+      <g id="addinGroup"></g>
+      <g id="psuGroup"></g>
+    </svg>
+  </div>
+</div>
+
+<div class="panel" id="panel">
+  <div class="empty-hint">👉 點選左方任一伺服器部件，這裡會顯示說明。<br><br>或按上方「▶ 執行工作流程」看整條資料路徑如何運作，並觀察上方功耗表與風扇轉速的連動。</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
